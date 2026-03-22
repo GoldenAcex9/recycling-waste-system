@@ -1,29 +1,134 @@
 {% extends 'base.html' %} {% block content %}
-<h2>Submit Waste Item</h2>
-<form method="post" enctype="multipart/form-data">
-  {% csrf_token %} {{ form.as_p }}
-  <button type="submit" class="btn btn-primary">Submit</button>
-</form>
+<div class="row mb-5">
+  <div class="col-md-8">
+    <div class="card border-0 shadow-lg">
+      <div class="card-body p-4">
+        <h3 class="mb-4">
+          <i class="fas fa-plus-circle" style="color: #10b981"></i> Submit New
+          Item
+        </h3>
+        <form method="post" enctype="multipart/form-data">
+          {% csrf_token %}
+          <div class="mb-3">
+            <label for="id_description" class="form-label"
+              ><i class="fas fa-pen"></i> Description</label
+            >
+            {{ form.description }}
+          </div>
+          <div class="mb-3">
+            <label for="id_location" class="form-label"
+              ><i class="fas fa-map-marker-alt"></i> Location</label
+            >
+            {{ form.location }}
+          </div>
+          <div class="mb-3">
+            <label for="id_image" class="form-label"
+              ><i class="fas fa-image"></i> Upload Image</label
+            >
+            {{ form.image }}
+          </div>
+          <div class="mb-4">
+            <div class="form-check form-check-lg">
+              {{ form.is_recycle }}
+              <label class="form-check-label" for="id_is_recycle">
+                <i class="fas fa-check-circle" style="color: #10b981"></i> Mark
+                as Recyclable
+              </label>
+            </div>
+          </div>
+          <button type="submit" class="btn btn-primary btn-lg w-100">
+            <i class="fas fa-paper-plane"></i> Submit Item
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
 
-<h3 class="mt-4">Your Submitted Items</h3>
+<h3 class="mb-4">
+  <i class="fas fa-list" style="color: #f97316"></i> Your Submitted Items
+</h3>
 <div class="row">
   {% for item in items %}
   <div class="col-md-4 mb-4">
-    <div class="card">
+    <div
+      class="card border-0 shadow-md overflow-hidden h-100"
+      style="
+        transition:
+          transform 0.3s,
+          box-shadow 0.3s;
+      "
+    >
       {% if item.image %}
-      <img src="{{ item.image.url }}" class="card-img-top" alt="Waste Image" />
+      <div style="height: 200px; overflow: hidden">
+        <img
+          src="{{ item.image.url }}"
+          class="w-100 h-100"
+          style="object-fit: cover"
+          alt="Waste Image"
+        />
+      </div>
+      {% else %}
+      <div
+        style="
+          height: 200px;
+          background: linear-gradient(135deg, #f0fdf4 0%, #f0f9ff 100%);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        "
+      >
+        <i class="fas fa-image" style="font-size: 3rem; color: #d1d5db"></i>
+      </div>
       {% endif %}
       <div class="card-body">
-        <h5 class="card-title">{{ item.description }}</h5>
-        <p class="card-text">Location: {{ item.location }}</p>
-        <p class="card-text">
-          Type: {% if item.is_recycle %}Recycle{% else %}Waste{% endif %}
+        <h5 class="card-title mb-2">{{ item.description }}</h5>
+        <p class="card-text text-muted mb-2">
+          <i class="fas fa-map-marker-alt"></i> {{ item.location }}
         </p>
+        <div class="d-flex align-items-center">
+          {% if item.is_recycle %}
+          <span class="badge bg-success"
+            ><i class="fas fa-recycle"></i> Recyclable</span
+          >
+          {% else %}
+          <span class="badge bg-danger"
+            ><i class="fas fa-trash"></i> Waste</span
+          >
+          {% endif %}
+        </div>
       </div>
     </div>
   </div>
   {% empty %}
-  <p>No items submitted yet.</p>
+  <div class="col-12">
+    <div class="alert alert-info text-center py-5" role="alert">
+      <i class="fas fa-inbox" style="font-size: 2rem"></i>
+      <p class="mt-3 mb-0">
+        No items submitted yet. Start by submitting your first waste item!
+      </p>
+    </div>
+  </div>
   {% endfor %}
 </div>
+
+<style>
+  form textarea,
+  form input[type="text"],
+  form input[type="file"] {
+    border-radius: 0.5rem;
+    border: 1px solid #e5e7eb;
+    padding: 0.75rem;
+  }
+  form textarea:focus,
+  form input[type="text"]:focus,
+  form input[type="file"]:focus {
+    border-color: #10b981;
+    box-shadow: 0 0 0 0.2rem rgba(16, 185, 129, 0.25);
+  }
+  .card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15) !important;
+  }
+</style>
 {% endblock %}
